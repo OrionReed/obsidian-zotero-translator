@@ -1,30 +1,30 @@
 import { App, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-interface MyPluginSettings {
+interface ZoteroTranslatorSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: ZoteroTranslatorSettings = {
 	mySetting: 'default'
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class ZoteroTranslator extends Plugin {
+	settings: ZoteroTranslatorSettings;
 
 	async onload() {
-		console.log('loading plugin');
+		//console.log('loading plugin');
 
 		await this.loadSettings();
 
-		this.addRibbonIcon('dice', 'Sample Plugin', () => {
-			new Notice('This is a notice!');
-		});
+		//this.addRibbonIcon('dice', 'Sample Plugin', () => {
+		//	new Notice('This is a notice!');
+		//});
 
-		this.addStatusBarItem().setText('Status Bar Text');
+		//this.addStatusBarItem().setText('Status Bar Text');
 
 		this.addCommand({
-			id: 'open-sample-modal',
-			name: 'Open Sample Modal',
+			id: 'paste-bibliographic-url',
+			name: 'Paste Bibliographic URL',
 			// callback: () => {
 			// 	console.log('Simple Callback');
 			// },
@@ -32,7 +32,7 @@ export default class MyPlugin extends Plugin {
 				let leaf = this.app.workspace.activeLeaf;
 				if (leaf) {
 					if (!checking) {
-						new SampleModal(this.app).open();
+						new Notice('Extracting from URL...');
 					}
 					return true;
 				}
@@ -46,15 +46,15 @@ export default class MyPlugin extends Plugin {
 			console.log('codemirror', cm);
 		});
 
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
+		//this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
+		//	console.log('click', evt);
+		//});
 
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		//this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
 	onunload() {
-		console.log('unloading plugin');
+		//console.log('unloading plugin');
 	}
 
 	async loadSettings() {
@@ -66,47 +66,51 @@ export default class MyPlugin extends Plugin {
 	}
 }
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		let {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
+	plugin: ZoteroTranslator;
+	
+	constructor(app: App, plugin: ZoteroTranslator) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
-
+	
 	display(): void {
 		let {containerEl} = this;
-
+		
 		containerEl.empty();
-
+		
 		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
-
+		
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue('')
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
+		.setName('Template')
+		.setDesc('Customise the default format used to paste data')
+		.addText(text => text
+			.setPlaceholder('template example blah blah')
+			.setValue('')
+			.onChange(async (value) => {
+				//console.log('Secret: ' + value);
+				this.plugin.settings.mySetting = value;
+				await this.plugin.saveSettings();
+			}));
+		}
 	}
-}
+	
+	/*
+
+	class SampleModal extends Modal {
+		constructor(app: App) {
+			super(app);
+		}
+	
+		onOpen() {
+			let {contentEl} = this;
+			contentEl.setText('Woah!');
+		}
+	
+		onClose() {
+			let {contentEl} = this;
+			contentEl.empty();
+		}
+	}
+
+	*/
